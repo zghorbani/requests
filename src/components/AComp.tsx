@@ -1,15 +1,11 @@
-import { useFetch } from "../hooks/useFetch";
-import { useMyContext } from "../utility/Provider";
-import { Items } from "../utility/type";
+import { useQuery } from "../hooks/useFetch";
 import Results from "./Results";
 
 const AComp = () => {
-    const { setItems} = useMyContext();
-    const { IsLoading, posts, IsError } = useFetch('https://jsonplaceholder.typicode.com/posts')
+    const { IsLoading, posts, IsError, refetch } = useQuery('https://jsonplaceholder.typicode.com/posts')
     const handleRefetch = () => {
-        setItems((prevState:Items) => ({ ...prevState, isForce: true }));
+        refetch()
     };
-    console.log('aaaa')
 
     return (
         <div className="w-1/2">

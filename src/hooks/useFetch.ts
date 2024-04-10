@@ -1,51 +1,68 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import _ from "lodash";
+import { useCallback, useEffect, useState } from "react";
+import { setLocal } from "../utility/Local";
 import { useMyContext } from "../utility/Provider";
-import { Items, Post } from "../utility/type";
-export const useFetch = (apiAddress = "") => {
+import { Item, Post } from "../utility/type";
+export const useQuery = (apiAddress: string) => {
   const { items, setItems } = useMyContext();
-  const [posts, setPosts] = useState<Post[]>([]);
   const [IsError, setIsError] = useState<boolean>(false);
   const [IsLoading, setIsLoading] = useState<boolean>(true);
-  let isRequestSent = false;
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const fetch = async () => {
+  const FetchLocal = async (force = false) => {
     setIsLoading(true);
-    try {
+    const item = localStorage.getItem(apiAddress);
+    if (item === null || force) {
       const response = await axios.get(apiAddress);
-      setItems((prevState: Items) => ({
-        ...prevState,
-        results: [
-          ...prevState.results,
-          { key: apiAddress, data: response.data },
-        ],
-      }));
+      setLocal({
+        key: apiAddress,
+        value: response.data,
+        ttl: 1000,
+      });
       setPosts(response.data);
       setIsLoading(false);
-    } catch (error: any) {
-      console.error("Error fetching data:", error);
-      setIsError(true);
+    } else {
+      setPosts(JSON.parse(item).value);
       setIsLoading(false);
     }
-    setItems((prevState: Items) => ({ ...prevState, isForce: false }));
   };
 
-  useEffect(() => {
-    console.log("isRequestSent", isRequestSent);
-    if (
-      (items.results.filter((item) => item.key === apiAddress).length === 0 ||
-        items.isForce) &&
-      !isRequestSent
-    ) {
-      isRequestSent = true;
-      fetch();
-    } else {
-      setPosts(
-        items.results.find((item) => item.key === apiAddress)?.data || []
-      );
-      setIsLoading(false);
-    }
-  }, [items.isForce]);
+  const fetch = useCallback(
+    async (force = false) => {
+      setIsLoading(true);
+      if (_.has(items, apiAddress) && !force) {
+        setPosts(_.get(items, apiAddress));
+        setIsLoading(false);
+      } else {
+        try {
+          const response = await axios.get(apiAddress);
+          setItems((prevState: Item) => ({
+            ...prevState,
+            [apiAddress]: response.data,
+          }));
+          setPosts(response.data);
+          setIsLoading(false);
+        } catch (error: any) {
+          console.error("Error fetching data:", error);
+          setIsError(true);
+          setIsLoading(false);
+        }
+      }
+    },
+    [apiAddress]
+  );
 
-  return { IsLoading, posts, IsError };
+  useEffect(() => {
+    // set & get with context
+    // fetch();
+    // set & get with localstorage
+    FetchLocal();
+  }, []);
+
+  const refetch = () => {
+    fetch(true);
+  };
+
+  return { IsLoading, posts, IsError, refetch };
 };

@@ -3,16 +3,9 @@ export interface Post {
   title: string;
 }
 
-export type Item = {
-  key: string;
-  data: Post[];
-};
-export type Items = {
-  isForce: boolean;
-  results: Item[];
-};
+export type Item = {[key:string]:Post[]}
 
 export interface ContextProps {
-  items: Items;
+  items: Item[];
   setItems: Function;
 }

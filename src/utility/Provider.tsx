@@ -1,19 +1,14 @@
 import { createContext, useContext, useState } from 'react';
-import { ContextProps, Items } from './type';
+import { ContextProps, Item } from './type';
 
 const MyContext = createContext<ContextProps>({
-    items: {
-        isForce: false,
-        results: []
-    },
+    items: []
+    ,
     setItems: () => null
 });
 
 export const MyProvider = ({ children }: { children: React.ReactNode }) => {
-    const [items, setItems] = useState<Items>({
-        isForce: false,
-        results: []
-    });
+    const [items, setItems] = useState<Item[]>([]);
     return (
         <MyContext.Provider value={{ items, setItems }}>
             {children}
