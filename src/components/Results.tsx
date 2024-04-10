@@ -1,19 +1,21 @@
+import { memo } from "react";
 
-const Results = ({ loading, error, posts }: { loading: boolean, error: string, posts: any[] }) => {
+const Results = ({ loading, error, posts }: { loading: boolean, error: boolean, posts: any[] }) => {
     
     if (loading) {
         return <div>Loading...</div>;
     }
+    if (error) {
+        return <p> Have a problem</p>;
+    }
+
     return (
-        <>
-            <p className="text-red-500">{error}</p>
             <ul>
                 {posts?.map((post: any) => (
                     <li key={post?.id} className="before:content-['_-']">{post?.title}</li>
                 ))}
             </ul>
-        </>
     );
 };
 
-export default Results;
+export default memo(Results);

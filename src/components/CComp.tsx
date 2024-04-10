@@ -2,9 +2,10 @@ import { useFetch } from "../hooks/useFetch";
 import Results from "./Results";
 
 const CComp = () => {
-    const { loading, posts, error } = useFetch('https://jsonplaceholder.typicode.com/posts')
+    const { IsLoading, posts, IsError } = useFetch('https://jsonplaceholder.typicode.com/posts')
+    
     return (
-        <Results loading={loading} posts={posts} error={error} />
+        <Results loading={IsLoading} posts={posts} error={IsError} />
     );
 };
 

@@ -4,11 +4,11 @@ import Results from "./Results";
 
 const AComp = () => {
     const { setItems} = useMyContext();
-
-    const { loading, posts, error } = useFetch('https://jsonplaceholder.typicode.com/posts')
+    const { IsLoading, posts, IsError } = useFetch('https://jsonplaceholder.typicode.com/posts')
     const handleRefetch = () => {
         setItems((prevState:any) => ({ ...prevState, isForce: true }));
     };
+    console.log('aaaa')
 
     return (
         <div className="w-1/2">
@@ -18,7 +18,7 @@ const AComp = () => {
             >
                 Refetch Data
             </button>
-            <Results loading={loading} posts={posts} error={error} />
+            <Results loading={IsLoading} posts={posts} error={IsError} />
         </div>
     );
 };
