@@ -1,6 +1,6 @@
 import { useState } from "react";
-import AComp from "./components/AComp";
-import CComp from "./components/CComp";
+import FetchFirst from "./components/FetchFirst";
+import FetchSame from "./components/FetchSame";
 import { MyProvider } from "./utility/Provider";
 
 function App() {
@@ -15,10 +15,10 @@ function App() {
       <div className="flex flex-col container my-2">
         <p className="my-3">Posts</p>
         <div className="flex justify-between gap-2">
-          <AComp />
+          <FetchFirst />
           <div className=" w-1/2">
             <button onClick={handleRefetch} className=" mb-2 border w-fit border-gray-500 p-2 rounded-md bg-gray-200">Fetch same Data</button>
-            {show && <CComp />}
+            {show && <FetchSame />}
           </div>
         </div>
       </div>

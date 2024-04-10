@@ -1,4 +1,6 @@
-export function setLocal({ key, value, ttl }: { key: string, value: any[], ttl: number }) {
+import { Localprops } from "./type"
+
+export function setLocal({ key, value, ttl }: Localprops) {
     const now = new Date()
     const item = {
         value: value,

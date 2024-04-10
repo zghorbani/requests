@@ -1,8 +1,9 @@
 import { useQuery } from "../hooks/useFetch";
 import Results from "./Results";
 
-const AComp = () => {
-    const { IsLoading, posts, IsError, refetch } = useQuery('https://jsonplaceholder.typicode.com/posts')
+const FetchFirst = () => {
+    const ApiAddress = process.env.REACT_APP_API_ADDRESS || ''
+    const { isLoading, posts, isError, refetch } = useQuery(ApiAddress)
     const handleRefetch = () => {
         refetch()
     };
@@ -15,9 +16,9 @@ const AComp = () => {
             >
                 Refetch Data
             </button>
-            <Results loading={IsLoading} posts={posts} error={IsError} />
+            <Results loading={isLoading} posts={posts} error={isError} />
         </div>
     );
 };
 
-export default AComp;
+export default FetchFirst;
