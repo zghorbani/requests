@@ -1,47 +1,36 @@
 import axios from "axios";
-import _ from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
-export interface Post {
-  id: number;
-  title: string;
-}
-
-const apiUrl = "https://jsonplaceholder.typicode.com/posts";
-
-export const useFetch = () => {
+import { useEffect, useState } from "react";
+import { useMyContext } from "../utility/Provider";
+import { Post } from "../utility/type";
+export const useFetch = (apiAddress = "") => {
+  const {items, setItems} = useMyContext();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [requestSent, setRequestSent] = useState<boolean>(false);
-
-  const fetchData = async () => {
+  const fetch = async () => {
     try {
-      const response = await axios.get<Post[]>(apiUrl);
+      const response = await axios.get(apiAddress);
+      setItems((prevState:any) => ({ ...prevState, results: [...prevState.results, {key:apiAddress,data:response.data}] }));
       setPosts(response.data);
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Error fetching data:", error);
       setError(error);
     }
     setLoading(false);
   };
 
-  const memoizedFetchData = useMemo(() => {
-    if (!requestSent) {
-      console.log('pppp',requestSent)
-      setRequestSent(true);
-      fetchData();
+           
+  useEffect(() => {
+    if (items.results.filter((item) => item.key === apiAddress).length === 0 || items.isForce) {
+      fetch();
+      setItems((prevState:any) => ({ ...prevState, isForce: false }));
+    } else if(items.results.filter((item) => item.key === apiAddress).length > 0){
+      setPosts(
+        items.results.filter((item) => item.key === apiAddress)?.[0]?.data
+      );
+      setLoading(false)
     }
-  }, [requestSent]);
+  }, [items.isForce]);
 
-  useEffect(() => memoizedFetchData, []);
-
-  const debouncedFetchData = useCallback(_.debounce(fetchData, 500), [
-    requestSent,
-  ]);
-
-  const handleRefetch = () => {
-    debouncedFetchData();
-  };
-
-  return { loading, handleRefetch, posts ,error};
+  return { loading, posts, error };
 };
