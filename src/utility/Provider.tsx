@@ -9,7 +9,7 @@ const MyContext = createContext<ContextProps>({
     setItems: () => null
 });
 
-export const MyProvider = ({ children }: { children: any }) => {
+export const MyProvider = ({ children }: { children: React.ReactNode }) => {
     const [items, setItems] = useState<Items>({
         isForce: false,
         results: []

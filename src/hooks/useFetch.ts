@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useMyContext } from "../utility/Provider";
-import { Post } from "../utility/type";
+import { Items, Post } from "../utility/type";
 export const useFetch = (apiAddress = "") => {
   const { items, setItems } = useMyContext();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -13,7 +13,7 @@ export const useFetch = (apiAddress = "") => {
     setIsLoading(true);
     try {
       const response = await axios.get(apiAddress);
-      setItems((prevState: any) => ({
+      setItems((prevState: Items) => ({
         ...prevState,
         results: [
           ...prevState.results,
@@ -27,8 +27,7 @@ export const useFetch = (apiAddress = "") => {
       setIsError(true);
       setIsLoading(false);
     }
-    setItems((prevState: any) => ({ ...prevState, isForce: false }));
-    isRequestSent = false;
+    setItems((prevState: Items) => ({ ...prevState, isForce: false }));
   };
 
   useEffect(() => {
@@ -38,7 +37,6 @@ export const useFetch = (apiAddress = "") => {
         items.isForce) &&
       !isRequestSent
     ) {
-      console.log("ppp", isRequestSent);
       isRequestSent = true;
       fetch();
     } else {

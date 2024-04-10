@@ -1,12 +1,13 @@
 import { useFetch } from "../hooks/useFetch";
 import { useMyContext } from "../utility/Provider";
+import { Items } from "../utility/type";
 import Results from "./Results";
 
 const AComp = () => {
     const { setItems} = useMyContext();
     const { IsLoading, posts, IsError } = useFetch('https://jsonplaceholder.typicode.com/posts')
     const handleRefetch = () => {
-        setItems((prevState:any) => ({ ...prevState, isForce: true }));
+        setItems((prevState:Items) => ({ ...prevState, isForce: true }));
     };
     console.log('aaaa')
 
