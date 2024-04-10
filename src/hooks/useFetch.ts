@@ -7,7 +7,10 @@ export const useFetch = (apiAddress = "") => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [IsError, setIsError] = useState<boolean>(false);
   const [IsLoading, setIsLoading] = useState<boolean>(true);
+  let isRequestSent = false;
+
   const fetch = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(apiAddress);
       setItems((prevState: any) => ({
@@ -18,26 +21,29 @@ export const useFetch = (apiAddress = "") => {
         ],
       }));
       setPosts(response.data);
+      setIsLoading(false);
     } catch (error: any) {
       console.error("Error fetching data:", error);
       setIsError(true);
+      setIsLoading(false);
     }
-    setIsLoading(false);
+    setItems((prevState: any) => ({ ...prevState, isForce: false }));
+    isRequestSent = false;
   };
 
-  console.log("usefetch");
   useEffect(() => {
+    console.log("isRequestSent", isRequestSent);
     if (
-      items.results.filter((item) => item.key === apiAddress).length === 0 ||
-      items.isForce
+      (items.results.filter((item) => item.key === apiAddress).length === 0 ||
+        items.isForce) &&
+      !isRequestSent
     ) {
+      console.log("ppp", isRequestSent);
+      isRequestSent = true;
       fetch();
-      setItems((prevState: any) => ({ ...prevState, isForce: false }));
-    } else if (
-      items.results.filter((item) => item.key === apiAddress).length > 0
-    ) {
+    } else {
       setPosts(
-        items.results.filter((item) => item.key === apiAddress)?.[0]?.data
+        items.results.find((item) => item.key === apiAddress)?.data || []
       );
       setIsLoading(false);
     }
