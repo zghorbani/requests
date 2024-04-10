@@ -1,6 +1,7 @@
 import axios from "axios";
 import _ from "lodash";
 import { useCallback, useEffect, useState } from "react";
+import { setLocal } from "../utility/Local";
 import { useMyContext } from "../utility/Provider";
 import { Item, Post } from "../utility/type";
 export const useQuery = (apiAddress: string) => {
@@ -9,23 +10,23 @@ export const useQuery = (apiAddress: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [posts, setPosts] = useState<Post[]>([]);
 
-  // const FetchLocal = async (force = false) => {
-  //   setIsLoading(true);
-  //   const item = localStorage.getItem(apiAddress);
-  //   if (item === null || force) {
-  //     const response = await axios.get(apiAddress);
-  //     setLocal({
-  //       key: apiAddress,
-  //       value: response.data,
-  //       ttl: 1000,
-  //     });
-  //     setPosts(response.data);
-  //     setIsLoading(false);
-  //   } else {
-  //     setPosts(JSON.parse(item).value);
-  //     setIsLoading(false);
-  //   }
-  // };
+  const FetchLocal = async (force = false) => {
+    setIsLoading(true);
+    const item = localStorage.getItem(apiAddress);
+    if (item === null || force) {
+      const response = await axios.get(apiAddress);
+      setLocal({
+        key: apiAddress,
+        value: response.data,
+        ttl: 1000,
+      });
+      setPosts(response.data);
+      setIsLoading(false);
+    } else {
+      setPosts(JSON.parse(item).value);
+      setIsLoading(false);
+    }
+  };
 
   const fetch = useCallback(
     async (force = false) => {
@@ -55,7 +56,7 @@ export const useQuery = (apiAddress: string) => {
   useEffect(() => {
     // set & get with context
     fetch();
-    // set & get with localstorage
+    // cache with localstorage even with refreshing page
     // FetchLocal();
   }, [apiAddress]);
 

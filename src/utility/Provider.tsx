@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { ContextProps, Item } from './type';
 
 const MyContext = createContext<ContextProps>({

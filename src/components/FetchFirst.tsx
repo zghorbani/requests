@@ -1,4 +1,4 @@
-import { useQuery } from "../hooks/useFetch";
+import { useQuery } from "../hooks/useQuery";
 import Results from "./Results";
 
 const FetchFirst = () => {

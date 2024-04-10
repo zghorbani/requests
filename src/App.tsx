@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { MyProvider } from "./utility/Provider";
 import FetchFirst from "./components/FetchFirst";
 import FetchSame from "./components/FetchSame";
-import { MyProvider } from "./utility/Provider";
 
 function App() {
   const [show, setShow] = useState(false)
